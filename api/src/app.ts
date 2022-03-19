@@ -2,8 +2,8 @@ import express from 'express'
 import lusca from 'lusca'
 import dotenv from 'dotenv'
 
-import booksRouter from './routers/booksRouter'
-import authorsRouter from './routers/authorsRouter'
+import booksRouter from './routers/book'
+import authorsRouter from './routers/author'
 import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 

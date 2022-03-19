@@ -6,7 +6,7 @@ import {
   deleteBook,
   findAll,
   updateBook,
-} from '../controllers/booksController'
+} from '../controllers/book'
 
 const router = express.Router()
 
