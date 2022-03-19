@@ -38,6 +38,7 @@ const bookSchema = new mongoose.Schema({
     min: 0,
   },
   author: [{ type: mongoose.Types.ObjectId, ref: 'Author' }],
+  userBorrow: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
 })
 
 export default mongoose.model<BookDocument>('Book', bookSchema)
