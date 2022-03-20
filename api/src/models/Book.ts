@@ -2,14 +2,14 @@
 import mongoose, { Document } from 'mongoose'
 
 export type BookDocument = Document & {
-  title: string
-  publishedYear: number
-  genre: string[]
-  page: number
-  rating: number
-  quantity: number
-  authorId: string[]
-}
+  title: string;
+  publishedYear: number;
+  genre: string[];
+  page: number;
+  rating: number;
+  quantity: number;
+  author: string[];
+};
 
 const bookSchema = new mongoose.Schema({
   title: {
@@ -37,8 +37,7 @@ const bookSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
-  author: [{ type: mongoose.Types.ObjectId, ref: 'Author' }],
-  userBorrow: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+  author: [String],
 })
 
 export default mongoose.model<BookDocument>('Book', bookSchema)

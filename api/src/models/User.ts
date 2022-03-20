@@ -2,19 +2,14 @@
 import mongoose, { Date, Document } from 'mongoose'
 
 export type UserDocument = Document & {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  address: string
-  loanBook: {
-    bookId: string
-    dayBorrow: Date
-    dayReturn: Date
-  }[]
-}
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: number;
+  address: string;
+};
 
-const bookSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true,
@@ -30,20 +25,13 @@ const bookSchema = new mongoose.Schema({
     unique: true,
   },
   phone: {
-    type: String,
+    type: Number,
     required: true,
   },
   address: {
     type: String,
     required: true,
   },
-  loanBook: [
-    {
-      bookId: { type: mongoose.Types.ObjectId, ref: 'Book' },
-      dayBorrow: Date,
-      dayReturn: Date,
-    },
-  ],
 })
 
-export default mongoose.model<UserDocument>('User', bookSchema)
+export default mongoose.model<UserDocument>('User', userSchema)
