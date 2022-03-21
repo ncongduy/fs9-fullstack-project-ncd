@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 
 import booksRouter from './routers/book'
 import usersRouter from './routers/user'
+import bookLoansRouter from './routers/bookLoan'
 import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 
@@ -20,6 +21,7 @@ app.use(express.json())
 // Set up routers
 app.use('/api/v1/books', booksRouter)
 app.use('/api/v1/users', usersRouter)
+app.use('/api/v1/bookloans', bookLoansRouter)
 
 // Custom API error handler
 app.use(apiErrorHandler)
