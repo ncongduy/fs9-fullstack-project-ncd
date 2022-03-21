@@ -9,6 +9,7 @@ export type BookDocument = Document & {
   rating: number;
   quantity: number;
   author: string[];
+  image: string;
 };
 
 const bookSchema = new mongoose.Schema({
@@ -38,6 +39,10 @@ const bookSchema = new mongoose.Schema({
     min: 0,
   },
   author: [String],
+  image: {
+    type: String,
+    required: true,
+  },
 })
 
 export default mongoose.model<BookDocument>('Book', bookSchema)
