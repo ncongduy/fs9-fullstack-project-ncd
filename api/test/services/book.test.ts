@@ -57,7 +57,7 @@ describe('book service', () => {
 
   // Check https://jestjs.io/docs/en/asynchronous for more info about
   // how to test async code, especially with error
-  it('should not get a non-existing movie', async () => {
+  it('should not get a non-existing book', async () => {
     expect.assertions(1);
 
     return BookServices.findById(nonExistingBookId).catch((e) => {
@@ -78,7 +78,7 @@ describe('book service', () => {
     expect(updated).toHaveProperty('publishedYear', 2018);
   });
 
-  it('should not update a non-existing movie', async () => {
+  it('should not update a non-existing book', async () => {
     expect.assertions(1);
 
     const update = {
@@ -91,7 +91,7 @@ describe('book service', () => {
     });
   });
 
-  it('should delete an existing movie', async () => {
+  it('should delete an existing book', async () => {
     expect.assertions(1);
     const book = await createBook();
 

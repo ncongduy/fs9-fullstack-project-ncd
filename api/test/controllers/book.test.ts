@@ -71,7 +71,7 @@ describe('book controller', () => {
     expect(res.body._id).toEqual(bookId);
   });
 
-  it('should not get back a non-existing movie', async () => {
+  it('should not get back a non-existing book', async () => {
     const res = await request(app).get(`/api/v1/books/${nonExistingBookId}`);
     expect(res.status).toBe(404);
   });
@@ -103,7 +103,7 @@ describe('book controller', () => {
     expect(res3.body[1]._id).toEqual(res2.body._id);
   });
 
-  it('should update an existing movie', async () => {
+  it('should update an existing book', async () => {
     let res = await createBook();
     expect(res.status).toBe(200);
 
@@ -120,7 +120,7 @@ describe('book controller', () => {
     expect(res.body.publishedYear).toEqual(2018);
   });
 
-  it('should delete an existing movie', async () => {
+  it('should delete an existing book', async () => {
     let res = await createBook();
     expect(res.status).toBe(200);
     const bookId = res.body._id;
