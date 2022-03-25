@@ -1,0 +1,9 @@
+.container {
+  border: 1px solid tomato;
+}
+
+.item {
+  background-color: cyan;
+  height: 300px;
+  width: 100%;
+}
