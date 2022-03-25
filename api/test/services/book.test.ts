@@ -5,7 +5,7 @@ import connect, { MongodHelper } from '../db-helper';
 const nonExistingBookId = '5e57b77b5744fa0b461c7906';
 
 async function createBook() {
-  const movie = new Book({
+  const book = new Book({
     title: 'Understanding your heart',
     publishedYear: 2016,
     genres: 'Psychology',
@@ -15,7 +15,7 @@ async function createBook() {
     author: 'Minh Niem',
     image: 'http://image',
   });
-  return await BookServices.create(movie);
+  return await BookServices.create(book);
 }
 
 describe('book service', () => {
