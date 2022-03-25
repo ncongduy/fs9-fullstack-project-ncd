@@ -25,20 +25,20 @@ export const createBookLoan = async (req: Request, res: Response, next: NextFunc
 }
 
 // PUT /bookloans/:id
-export const updateBookLoan = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const update = req.body
-    const id = req.params.id
-    const updateBookLoan = await BookLoanServices.update(id, update)
-    res.json(updateBookLoan)
-  } catch (error) {
-    if (error instanceof Error && error.name == 'ValidationError') {
-      next(new BadRequestError('Invalid Request', error))
-    } else {
-      next(error)
-    }
-  }
-}
+// export const updateBookLoan = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const update = req.body
+//     const id = req.params.id
+//     const updateBookLoan = await BookLoanServices.update(id, update)
+//     res.json(updateBookLoan)
+//   } catch (error) {
+//     if (error instanceof Error && error.name == 'ValidationError') {
+//       next(new BadRequestError('Invalid Request', error))
+//     } else {
+//       next(error)
+//     }
+//   }
+// }
 
 // DELETE /bookloans/:id
 export const deleteBookLoan = async (req: Request, res: Response, next: NextFunction) => {

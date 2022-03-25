@@ -35,20 +35,20 @@ const findAll = async (): Promise<BookLoanDocument[]> => {
   return BookLoan.find().sort({ bookId: 1 })
 }
 
-const update = async (
-  bookLoanId: string,
-  update: Partial<BookLoanDocument>
-): Promise<BookLoanDocument | null> => {
-  const foundBookLoan = await BookLoan.findByIdAndUpdate(bookLoanId, update, {
-    new: true,
-  })
+// const update = async (
+//   bookLoanId: string,
+//   update: Partial<BookLoanDocument>
+// ): Promise<BookLoanDocument | null> => {
+//   const foundBookLoan = await BookLoan.findByIdAndUpdate(bookLoanId, update, {
+//     new: true,
+//   });
 
-  if (!foundBookLoan) {
-    throw new NotFoundError(`Book loan ${bookLoanId} not found`)
-  }
+//   if (!foundBookLoan) {
+//     throw new NotFoundError(`Book loan ${bookLoanId} not found`);
+//   }
 
-  return foundBookLoan
-}
+//   return foundBookLoan;
+// };
 
 const deleteBookLoan = async (bookLoanId: string): Promise<BookLoanDocument | null> => {
   const foundBookLoan = BookLoan.findByIdAndDelete(bookLoanId)
@@ -65,6 +65,5 @@ export default {
   create,
   findById,
   findAll,
-  update,
   deleteBookLoan,
 }
