@@ -2,19 +2,24 @@
 import mongoose, { Document } from 'mongoose'
 
 export type BookLoanDocument = Document & {
-  userId: string;
-  bookId: string;
-};
+  userId: string
+  bookId: string
+}
 
-const bookLoanSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
+const bookLoanSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
+    },
+    bookId: {
+      type: String,
+      required: true,
+    },
   },
-  bookId: {
-    type: String,
-    required: true,
-  },
-})
+  {
+    timestamps: true,
+  }
+)
 
 export default mongoose.model<BookLoanDocument>('BookLoan', bookLoanSchema)
