@@ -39,3 +39,6 @@ dist/**/*
 
 *.swo
 *.swp
+
+# Ignore database
+src/db
