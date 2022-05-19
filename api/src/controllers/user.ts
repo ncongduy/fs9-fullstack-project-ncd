@@ -10,7 +10,7 @@ import { JWT_SECRET } from '../util/secrets'
 export const googleLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { user } = req as any
-    const token = jwt.sign({ email: user?.email }, JWT_SECRET)
+    const token = jwt.sign({ email: user?.email, role: user?.role }, JWT_SECRET)
     res.json({ user, token })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {

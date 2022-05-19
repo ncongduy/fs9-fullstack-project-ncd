@@ -5,7 +5,7 @@ export type UserDocument = Document & {
   firstName: string
   lastName: string
   email: string
-  role?: string
+  role: string
 }
 
 const userSchema = new mongoose.Schema(
