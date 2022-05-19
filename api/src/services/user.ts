@@ -5,6 +5,18 @@ const create = async (user: UserDocument): Promise<UserDocument> => {
   return user.save()
 }
 
+const findOrCreate = async (userInfo: any) => {
+  const foundUser = await User.findOne({ email: userInfo.email })
+
+  if (!foundUser) {
+    const newUser = new User(userInfo)
+    await newUser.save()
+    return newUser
+  }
+
+  return foundUser
+}
+
 const findById = async (userId: string): Promise<UserDocument> => {
   const foundUser = await User.findById(userId)
 
@@ -50,4 +62,5 @@ export default {
   findAll,
   update,
   deleteUser,
+  findOrCreate,
 }
