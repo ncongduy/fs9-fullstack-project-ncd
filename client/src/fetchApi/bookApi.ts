@@ -4,7 +4,7 @@ class BookApi {
   baseUrl: string;
 
   constructor() {
-    this.baseUrl = 'http://localhost:3001/api/v1/books';
+    this.baseUrl = 'http://localhost:5000/api/v1/books';
   }
 
   async getAllBooks() {

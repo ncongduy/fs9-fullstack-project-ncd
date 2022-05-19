@@ -14,6 +14,7 @@ if (fs.existsSync('.env')) {
 export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
 
+export const GOOGLE_CLIENT_ID = process.env['GOOGLE_CLIENT_ID']
 export const JWT_SECRET = process.env['JWT_SECRET'] as string
 export const MONGODB_URI = (
   prod ? process.env['MONGODB_URI'] : process.env['MONGODB_URI_LOCAL']
@@ -26,13 +27,9 @@ if (!JWT_SECRET) {
 
 if (!MONGODB_URI) {
   if (prod) {
-    logger.error(
-      'No mongo connection string. Set MONGODB_URI environment variable.'
-    )
+    logger.error('No mongo connection string. Set MONGODB_URI environment variable.')
   } else {
-    logger.error(
-      'No mongo connection string. Set MONGODB_URI_LOCAL environment variable.'
-    )
+    logger.error('No mongo connection string. Set MONGODB_URI_LOCAL environment variable.')
   }
   process.exit(1)
 }

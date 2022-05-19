@@ -1,15 +1,28 @@
 import { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken'
 
 import User from '../models/User'
 import UserServices from '../services/user'
 import { BadRequestError } from '../helpers/apiError'
+import { JWT_SECRET } from '../util/secrets'
+
+// POST /users/google-login
+export const googleLogin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { user } = req as any
+    const token = jwt.sign({ email: user?.email }, JWT_SECRET)
+    res.json({ user, token })
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', error))
+    } else {
+      next(error)
+    }
+  }
+}
 
 // POST /users
-export const createUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = new User(req.body)
     await UserServices.create(user)
@@ -24,11 +37,7 @@ export const createUser = async (
 }
 
 // PUT /users/:userId
-export const updateUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const update = req.body
     const userId = req.params.userId
@@ -44,11 +53,7 @@ export const updateUser = async (
 }
 
 // DELETE /users/:userId
-export const deleteUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await UserServices.deleteUser(req.params.userId)
     res.status(204).end()
@@ -62,11 +67,7 @@ export const deleteUser = async (
 }
 
 // GET /users/:userId
-export const findById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const findById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     res.json(await UserServices.findById(req.params.userId))
   } catch (error) {
@@ -79,11 +80,7 @@ export const findById = async (
 }
 
 // GET /users
-export const findAll = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const findAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
     res.json(await UserServices.findAll())
   } catch (error) {

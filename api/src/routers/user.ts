@@ -1,4 +1,5 @@
 import express from 'express'
+import passport from 'passport'
 
 import {
   findAll,
@@ -6,6 +7,7 @@ import {
   updateUser,
   deleteUser,
   createUser,
+  googleLogin,
 } from '../controllers/user'
 
 const router = express.Router()
@@ -16,5 +18,10 @@ router.get('/:userId', findById)
 router.put('/:userId', updateUser)
 router.delete('/:userId', deleteUser)
 router.post('/', createUser)
+router.post(
+  '/google-login',
+  passport.authenticate('google-id-token', { session: false }),
+  googleLogin
+)
 
 export default router

@@ -18,8 +18,11 @@
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix"
   },
   "dependencies": {
+    "@types/cors": "^2.8.12",
     "@types/jsonwebtoken": "^8.3.7",
     "@types/lusca": "^1.7.0",
+    "@types/passport-jwt": "^3.0.6",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
@@ -31,6 +34,8 @@
     "mongodb-memory-server": "^6.3.1",
     "mongoose": "^5.11.15",
     "passport": "^0.4.1",
+    "passport-google-id-token": "^0.4.7",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "winston": "^3.2.1"
   },
