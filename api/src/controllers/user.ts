@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 
 import User from '../models/User'
 import UserServices from '../services/user'
-import { BadRequestError } from '../helpers/apiError'
+import { BadRequestError, ForbiddenError } from '../helpers/apiError'
 import { JWT_SECRET } from '../util/secrets'
 
 // POST /users/google-login
@@ -12,6 +12,21 @@ export const googleLogin = async (req: Request, res: Response, next: NextFunctio
     const { user } = req as any
     const token = jwt.sign({ email: user?.email, role: user?.role }, JWT_SECRET)
     res.json({ user, token })
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', error))
+    } else {
+      next(error)
+    }
+  }
+}
+
+// Authorization
+export const authorize = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { role } = req.user as any
+    if (role !== 'admin') next(new ForbiddenError('Unauthorized'))
+    next()
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {
       next(new BadRequestError('Invalid Request', error))
