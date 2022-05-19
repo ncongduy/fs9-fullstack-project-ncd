@@ -5,6 +5,7 @@ export type UserDocument = Document & {
   firstName: string
   lastName: string
   email: string
+  role?: string
 }
 
 const userSchema = new mongoose.Schema(
@@ -22,6 +23,10 @@ const userSchema = new mongoose.Schema(
       index: true,
       required: true,
       unique: true,
+    },
+    role: {
+      type: String,
+      default: 'user',
     },
   },
   {
