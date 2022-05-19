@@ -30,8 +30,15 @@ export const jwtStrategy = new Strategy(
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   },
   (payload: any, done: any) => {
-    // console.log('payload: ', payload)
-
-    done(null, {})
+    try {
+      const { role, email } = payload
+      const user = {
+        email,
+        role,
+      }
+      done(null, user)
+    } catch (err) {
+      done(err, {})
+    }
   }
 )
