@@ -2,14 +2,26 @@ import { Request, Response, NextFunction } from 'express'
 
 import Book from '../models/Book'
 import BookServices from '../services/book'
-import { BadRequestError } from '../helpers/apiError'
+import { BadRequestError, ForbiddenError } from '../helpers/apiError'
+
+// Authorization
+export const authorize = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = req.user as any
+    const { role } = user
+    if (role !== 'admin') next(new ForbiddenError('Unauthorized'))
+    next()
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', error))
+    } else {
+      next(error)
+    }
+  }
+}
 
 // POST /books
-export const createBook = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const createBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const book = new Book(req.body)
     await BookServices.create(book)
@@ -24,11 +36,7 @@ export const createBook = async (
 }
 
 // PUT /books/:bookId
-export const updateBook = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const update = req.body
     const bookId = req.params.bookId
@@ -44,11 +52,7 @@ export const updateBook = async (
 }
 
 // DELETE /books/:bookId
-export const deleteBook = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await BookServices.deleteBook(req.params.bookId)
     res.status(204).end()
@@ -62,11 +66,7 @@ export const deleteBook = async (
 }
 
 // GET /books/:bookId
-export const findById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const findById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     res.json(await BookServices.findById(req.params.bookId))
   } catch (error) {
@@ -79,11 +79,7 @@ export const findById = async (
 }
 
 // GET /books
-export const findAll = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const findAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
     res.json(await BookServices.findAll())
   } catch (error) {
