@@ -37,6 +37,26 @@ describe('user service', () => {
     expect(user).toHaveProperty('email', 'pauli@gmail.com')
   })
 
+  it('should find or create a user', async () => {
+    const user = await createUser()
+    const findOrCreateUser1 = await UserServices.findOrCreate(user)
+    const findOrCreateUser2 = await UserServices.findOrCreate({
+      firstName: 'Nhi',
+      lastName: 'Le',
+      email: 'nhi@gmail.com',
+    })
+
+    expect(findOrCreateUser1).toHaveProperty('_id')
+    expect(findOrCreateUser1).toHaveProperty('firstName', 'Pauli')
+    expect(findOrCreateUser1).toHaveProperty('lastName', 'Nguyen')
+    expect(findOrCreateUser1).toHaveProperty('email', 'pauli@gmail.com')
+
+    expect(findOrCreateUser2).toHaveProperty('_id')
+    expect(findOrCreateUser2).toHaveProperty('firstName', 'Nhi')
+    expect(findOrCreateUser2).toHaveProperty('lastName', 'Le')
+    expect(findOrCreateUser2).toHaveProperty('email', 'nhi@gmail.com')
+  })
+
   it('should get a user with id', async () => {
     const user = await createUser()
     const found = await UserServices.findById(user._id)
