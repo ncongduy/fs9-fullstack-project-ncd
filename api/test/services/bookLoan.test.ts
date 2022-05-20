@@ -29,7 +29,7 @@ async function createUser() {
   return await UserServices.create(new User(user))
 }
 
-async function createBookLoan() {
+async function borrowBook() {
   const user = await createUser()
   const book = await createBook()
 
@@ -38,7 +38,7 @@ async function createBookLoan() {
     bookId: book._id,
   })
 
-  return await BookLoanServices.create(bookLoan)
+  return await BookLoanServices.borrowBook(bookLoan)
 }
 
 describe('book loan service', () => {
@@ -65,6 +65,8 @@ describe('book loan service', () => {
     expect(validate).toEqual(true)
   })
 
+  // Check https://jestjs.io/docs/en/asynchronous for more info about
+  // how to test async code, especially with error
   it('should validate a non-existing user', async () => {
     const nonExistingUserId = '5e57b77b5744fa0b461c7906'
     const book = await createBook()
@@ -83,41 +85,20 @@ describe('book loan service', () => {
     })
   })
 
-  it('should create a book loan', async () => {
-    const bookLoan = await createBookLoan()
+  it('borrow a book', async () => {
+    const bookLoan = await borrowBook()
 
     expect(bookLoan).toHaveProperty('_id')
     expect(bookLoan).toHaveProperty('userId')
     expect(bookLoan).toHaveProperty('bookId')
   })
 
-  it('should get a book loan with id', async () => {
-    const bookLoan = await createBookLoan()
-    const found = await BookLoanServices.findById(bookLoan._id)
+  it('return a book', async () => {
+    const bookLoan = await borrowBook()
+    await BookLoanServices.returnBook(bookLoan._id)
 
-    expect(found.userId).toEqual(bookLoan.userId)
-    expect(found.bookId).toEqual(bookLoan.bookId)
-    expect(found._id).toEqual(bookLoan._id)
-  })
-
-  // Check https://jestjs.io/docs/en/asynchronous for more info about
-  // how to test async code, especially with error
-  it('should not get a non-existing book loan', async () => {
-    expect.assertions(1)
-    const nonExistingBookLoanId = '5e57b77b5744fa0b461c7906'
-
-    return BookLoanServices.findById(nonExistingBookLoanId).catch((e) => {
-      expect(e.message).toMatch(`Book loan ${nonExistingBookLoanId} not found`)
-    })
-  })
-
-  it('should delete an existing book loan', async () => {
-    expect.assertions(1)
-    const bookLoan = await createBookLoan()
-
-    await BookLoanServices.deleteBookLoan(bookLoan._id)
-    return BookLoanServices.findById(bookLoan._id).catch((e) => {
-      expect(e.message).toBe(`Book loan ${bookLoan._id} not found`)
+    return await BookLoanServices.returnBook(bookLoan._id).catch((e) => {
+      expect(e.message).toMatch(`Book loan ${bookLoan._id} not found`)
     })
   })
 })

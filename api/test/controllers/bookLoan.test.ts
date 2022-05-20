@@ -5,6 +5,11 @@ import { BookDocument } from '../../src/models/Book'
 import app from '../../src/app'
 import connect, { MongodHelper } from '../db-helper'
 
+//const nonExistingBookloanId = '5e57b77b5744fa0b461c7906'
+const nonAuthorizedToken = `Bearer`
+const adminToken = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5jb25nZHV5QGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY1MzAzMDIxNH0.oCXfl1lGdnCnywB8D-LSTh8wFYICVLK2OZbFb8YBJo4`
+const userToken = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5oaUBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTY1MzAzNjYyNX0._JLRjCwf_vIL_vkSa5ZZLoblX-RoGfHUKhDDcglOz5M`
+
 async function createUser(override?: Partial<UserDocument>) {
   let user = {
     firstName: 'Pauli',
@@ -16,7 +21,7 @@ async function createUser(override?: Partial<UserDocument>) {
     user = { ...user, ...override }
   }
 
-  return await request(app).post('/api/v1/users').send(user)
+  return await request(app).post('/api/v1/users').send(user).set({ Authorization: adminToken })
 }
 
 async function createBook(override?: Partial<BookDocument>) {
@@ -33,10 +38,14 @@ async function createBook(override?: Partial<BookDocument>) {
     book = { ...book, ...override }
   }
 
-  return await request(app).post('/api/v1/books').send(book)
+  return await request(app).post('/api/v1/books').send(book).set({ Authorization: adminToken })
 }
 
-async function createBookLoan(userArg?: Partial<UserDocument>, bookArg?: Partial<BookDocument>) {
+async function borrowBook(
+  userArg?: Partial<UserDocument>,
+  bookArg?: Partial<BookDocument>,
+  token?: string
+) {
   const user = await createUser(userArg)
   const book = await createBook(bookArg)
 
@@ -45,7 +54,45 @@ async function createBookLoan(userArg?: Partial<UserDocument>, bookArg?: Partial
     bookId: book.body._id,
   }
 
-  return await request(app).post('/api/v1/bookloans').send(bookLoan)
+  return await request(app).post('/api/v1/bookloans').send(bookLoan).set({ Authorization: token })
+}
+
+async function returnBook(token?: string) {
+  let res = await borrowBook({}, {}, userToken)
+  expect(res.status).toBe(200)
+  const bookLoanId = res.body._id
+
+  res = await request(app).delete(`/api/v1/bookloans/${bookLoanId}`).set({ Authorization: token })
+  return res
+}
+
+async function findAllBookLoans(token?: string) {
+  const user = await createUser()
+  const book1 = await createBook()
+  const book2 = await createBook({
+    title: 'Work life balance',
+    publishedYear: 2022,
+    page: 100,
+    rating: 5,
+    author: 'No name',
+    image: 'http://image',
+  })
+
+  await request(app)
+    .post('/api/v1/bookloans')
+    .send({ userId: user.body._id, bookId: book1.body._id })
+    .set({ Authorization: userToken })
+
+  await request(app)
+    .post('/api/v1/bookloans')
+    .send({ userId: user.body._id, bookId: book2.body._id })
+    .set({ Authorization: userToken })
+
+  const res = await request(app)
+    .get(`/api/v1/bookloans/${user.body._id}`)
+    .set({ Authorization: token })
+
+  return res
 }
 
 describe('book loan controller', () => {
@@ -63,8 +110,13 @@ describe('book loan controller', () => {
     await mongodHelper.closeDatabase()
   })
 
-  it('should create a book loan', async () => {
-    const res = await createBookLoan()
+  it('can not borrow book without authorization', async () => {
+    const res = await borrowBook({}, {}, nonAuthorizedToken)
+    expect(res.status).toBe(401)
+  })
+
+  it('can borrow with authorization', async () => {
+    const res = await borrowBook({}, {}, userToken)
 
     expect(res.status).toBe(200)
     expect(res.body).toHaveProperty('_id')
@@ -72,7 +124,7 @@ describe('book loan controller', () => {
     expect(res.body).toHaveProperty('bookId')
   })
 
-  it('should not create a book loan with wrong data', async () => {
+  it('can not borrow book with wrong data', async () => {
     const user = await createUser()
 
     const bookLoan = {
@@ -80,76 +132,32 @@ describe('book loan controller', () => {
       // bookId: book.body._id,
     }
 
-    const res = await request(app).post('/api/v1/bookloans').send(bookLoan)
+    const res = await request(app)
+      .post('/api/v1/bookloans')
+      .send(bookLoan)
+      .set({ Authorization: userToken })
+
     expect(res.status).toBe(404)
   })
 
-  it('should get back an existing book loan', async () => {
-    let res = await createBookLoan()
-    expect(res.status).toBe(200)
-
-    const bookLoanId = res.body._id
-    res = await request(app).get(`/api/v1/bookloans/${bookLoanId}`)
-
-    expect(res.body._id).toEqual(bookLoanId)
+  it('can not return book without authorization', async () => {
+    const res = await returnBook(nonAuthorizedToken)
+    expect(res.status).toEqual(401)
   })
 
-  it('should not get back a non-existing book loan', async () => {
-    const nonExistingBookLoanId = '5e57b77b5744fa0b461c7906'
-    const res = await request(app).get(`/api/v1/bookloans/${nonExistingBookLoanId}`)
-    expect(res.status).toBe(404)
-  })
-
-  it('should get back all book loan', async () => {
-    const res1 = await createBookLoan(
-      {
-        firstName: 'Duy',
-        lastName: 'Nguyen',
-        email: 'duy@gmail.com',
-      },
-      {
-        title: 'Work as a journey',
-        publishedYear: 2016,
-        page: 200,
-        rating: 5,
-        author: 'Minh Niem',
-        image: 'http://image',
-      }
-    )
-
-    const res2 = await createBookLoan(
-      {
-        firstName: 'Bao',
-        lastName: 'Tran',
-        email: 'bao@gmail.com',
-      },
-      {
-        title: 'Selfhelp',
-        publishedYear: 2022,
-        page: 200,
-        rating: 4,
-        author: 'Godfather',
-        image: 'http://image',
-      }
-    )
-
-    const res3 = await request(app).get('/api/v1/bookloans')
-
-    expect(res3.body.length).toEqual(2)
-    expect(res3.body[0]._id).toEqual(res1.body._id)
-    expect(res3.body[1]._id).toEqual(res2.body._id)
-  })
-
-  it('should delete an existing book loan', async () => {
-    let res = await createBookLoan()
-    expect(res.status).toBe(200)
-    const bookLoanId = res.body._id
-
-    res = await request(app).delete(`/api/v1/bookloans/${bookLoanId}`)
-
+  it('can return book with authorization', async () => {
+    const res = await returnBook(userToken)
     expect(res.status).toEqual(204)
+  })
 
-    res = await request(app).get(`/api/v1/bookloans/${bookLoanId}`)
-    expect(res.status).toBe(404)
+  it('should not return all book loan without authorization', async () => {
+    const res = await findAllBookLoans(nonAuthorizedToken)
+    expect(res.status).toBe(401)
+  })
+
+  it('should return all book loan with authorization', async () => {
+    const res = await findAllBookLoans(userToken)
+    expect(res.status).toBe(200)
+    expect(res.body.length).toEqual(2)
   })
 })

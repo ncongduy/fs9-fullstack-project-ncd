@@ -1,5 +1,5 @@
 import BookLoan, { BookLoanDocument } from '../models/BookLoan'
-import Book from '../models/Book'
+import Book, { BookDocument } from '../models/Book'
 import User from '../models/User'
 import { NotFoundError } from '../helpers/apiError'
 
@@ -17,40 +17,21 @@ const validate = async (userId: string, bookId: string): Promise<boolean> => {
   return true
 }
 
-const create = async (bookLoan: BookLoanDocument): Promise<BookLoanDocument> => {
+const borrowBook = async (bookLoan: BookLoanDocument): Promise<BookLoanDocument> => {
   return bookLoan.save()
 }
 
-const findById = async (bookLoanId: string): Promise<BookLoanDocument> => {
-  const foundBookLoan = await BookLoan.findById(bookLoanId)
+const findAllBookByUserId = async (userId: string): Promise<BookDocument[]> => {
+  const foundAllBookLoan = await BookLoan.find({ userId: userId })
+  if (foundAllBookLoan.length === 0) throw new NotFoundError(`User ${userId} does not borrow book`)
 
-  if (!foundBookLoan) {
-    throw new NotFoundError(`Book loan ${bookLoanId} not found`)
-  }
+  const allBookId = foundAllBookLoan.map((bookloan) => bookloan.bookId)
+  const allBooks = await Book.find({ _id: { $in: allBookId } })
 
-  return foundBookLoan
+  return allBooks
 }
 
-const findAll = async (): Promise<BookLoanDocument[]> => {
-  return BookLoan.find().sort({ bookId: 1 })
-}
-
-// const update = async (
-//   bookLoanId: string,
-//   update: Partial<BookLoanDocument>
-// ): Promise<BookLoanDocument | null> => {
-//   const foundBookLoan = await BookLoan.findByIdAndUpdate(bookLoanId, update, {
-//     new: true,
-//   });
-
-//   if (!foundBookLoan) {
-//     throw new NotFoundError(`Book loan ${bookLoanId} not found`);
-//   }
-
-//   return foundBookLoan;
-// };
-
-const deleteBookLoan = async (bookLoanId: string): Promise<BookLoanDocument | null> => {
+const returnBook = async (bookLoanId: string): Promise<BookLoanDocument | null> => {
   const foundBookLoan = BookLoan.findByIdAndDelete(bookLoanId)
 
   if (!foundBookLoan) {
@@ -62,8 +43,7 @@ const deleteBookLoan = async (bookLoanId: string): Promise<BookLoanDocument | nu
 
 export default {
   validate,
-  create,
-  findById,
-  findAll,
-  deleteBookLoan,
+  borrowBook,
+  findAllBookByUserId,
+  returnBook,
 }
