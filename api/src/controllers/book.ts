@@ -7,9 +7,9 @@ import { BadRequestError, ForbiddenError } from '../helpers/apiError'
 // Authorization
 export const authorize = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = req.user as any
+    const { user } = req as any
     const { role } = user
-    if (role !== 'admin') next(new ForbiddenError('Unauthorized'))
+    if (role !== 'admin') return next(new ForbiddenError())
     next()
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {
