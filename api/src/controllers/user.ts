@@ -24,8 +24,9 @@ export const googleLogin = async (req: Request, res: Response, next: NextFunctio
 // Authorization
 export const authorize = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { role } = req.user as any
-    if (role !== 'admin') next(new ForbiddenError('Unauthorized'))
+    const { user } = req as any
+    const { role } = user
+    if (role !== 'admin') return next(new ForbiddenError())
     next()
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {
