@@ -21,14 +21,15 @@ const borrowBook = async (bookLoan: BookLoanDocument): Promise<BookLoanDocument>
   return bookLoan.save()
 }
 
-const findAllBookByUserId = async (userId: string): Promise<BookDocument[]> => {
+const findAllBookByUserId = async (userId: string): Promise<any> => {
   const foundAllBookLoan = await BookLoan.find({ userId: userId })
   if (foundAllBookLoan.length === 0) throw new NotFoundError(`User ${userId} does not borrow book`)
 
+  const allBookloanId = foundAllBookLoan.map((bookloan) => bookloan._id)
   const allBookId = foundAllBookLoan.map((bookloan) => bookloan.bookId)
   const allBooks = await Book.find({ _id: { $in: allBookId } })
 
-  return allBooks
+  return { allBooks, allBookloanId }
 }
 
 const returnBook = async (bookLoanId: string): Promise<BookLoanDocument | null> => {

@@ -158,6 +158,7 @@ describe('book loan controller', () => {
   it('should return all book loan with authorization', async () => {
     const res = await findAllBookLoans(userToken)
     expect(res.status).toBe(200)
-    expect(res.body.length).toEqual(2)
+    expect(res.body.allBooks.length).toEqual(2)
+    expect(res.body.allBookloanId.length).toEqual(2)
   })
 })
