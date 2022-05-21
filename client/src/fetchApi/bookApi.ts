@@ -1,104 +1,31 @@
-import { BookDocument } from '../types';
+import axiosClient from './axiosClient'
+import { BookDocument } from '../types'
 
-class BookApi {
-  baseUrl: string;
+const bookApi = {
+  getAllBooks() {
+    const url = `/books`
+    return axiosClient.get(url)
+  },
 
-  constructor() {
-    this.baseUrl = 'http://localhost:5000/api/v1/books';
-  }
+  getOneBook(bookId: string) {
+    const url = `/books/${bookId}`
+    return axiosClient.get(url)
+  },
 
-  async getAllBooks() {
-    try {
-      const fetchData = await fetch(`${this.baseUrl}`);
-      if (!fetchData.ok) throw new Error(`${fetchData.status} Can not fetch data`);
+  createBook(data: BookDocument) {
+    const url = `/books`
+    return axiosClient.post(url, data)
+  },
 
-      const responseData = await fetchData.json();
-      return responseData;
-    } catch (error) {
-      return error;
-    }
-  }
+  updateBook(bookId: string, data: BookDocument) {
+    const url = `/books/${bookId}`
+    return axiosClient.put(url, data)
+  },
 
-  async getOneBook(bookId: string) {
-    try {
-      const fetchData = await fetch(`${this.baseUrl}/${bookId}`);
-      if (!fetchData.ok) throw new Error(`${fetchData.status} Can not fetch data`);
-
-      const responseData = await fetchData.json();
-      return responseData;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async createBook(data: BookDocument) {
-    try {
-      const fetchData = await fetch(`${this.baseUrl}`, {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify(data),
-      });
-
-      if (!fetchData.ok) throw new Error(`${fetchData.status} Can not post data`);
-
-      return data;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async updateBook(bookId: string, data: BookDocument) {
-    try {
-      const fetchData = await fetch(`${this.baseUrl}/${bookId}`, {
-        method: 'PUT',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify(data),
-      });
-
-      if (!fetchData.ok) throw new Error(`${fetchData.status} Can not post data`);
-
-      return data;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async deleteBook(bookId: string) {
-    try {
-      const fetchData = await fetch(`${this.baseUrl}/${bookId}`, {
-        method: 'DELETE',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify({}),
-      });
-
-      if (!fetchData.ok) throw new Error(`${fetchData.status} Can not delete data`);
-    } catch (error) {
-      return error;
-    }
-  }
+  deleteBook(bookId: string) {
+    const url = `/books/${bookId}`
+    return axiosClient.delete(url)
+  },
 }
 
-const bookApi = new BookApi();
-
-export default bookApi;
+export default bookApi

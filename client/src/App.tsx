@@ -3,21 +3,30 @@ import GoogleLogin from 'react-google-login'
 
 import HomePage from './pages/HomePage'
 import AdminPage from './pages/AdminPage'
-import axios from 'axios'
+import axiosClient from './fetchApi/axiosClient'
+
+type ResTypes = {
+  token: string
+  user: {
+    firstName: string
+    lastName: string
+    email: string
+    role: string
+    updateAt: Date
+    createAt: Date
+  }
+}
 
 function App() {
   const responseGoogle = async (response: any) => {
-    console.log(response)
     const tokenId = response?.tokenId
-    const res = await axios.post('/users/google-login', {
+    const res: ResTypes = await axiosClient.post('/users/google-login', {
       id_token: tokenId,
     })
 
-    const { user, token } = res.data
+    const { user, token } = res
     localStorage.setItem('access_token', token)
   }
-
-  axios.get('/bookloans')
 
   return (
     <>

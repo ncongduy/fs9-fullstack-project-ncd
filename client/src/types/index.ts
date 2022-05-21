@@ -1,18 +1,20 @@
 export type BookDocument = {
-  title: string;
-  publishedYear: number;
-  genre: string;
-  page: number;
-  rating: number;
-  quantity: number;
-  author: string;
-  image: string;
-};
+  title: string
+  publishedYear: number
+  page: number
+  rating: number
+  author: string
+  image: string
+}
 
 export type UserDocument = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: number;
-  address: string;
-};
+  firstName: string
+  lastName: string
+  email: string
+  role: string
+}
+
+export type BookLoanDocument = {
+  bookId: string
+  userId: string
+}
