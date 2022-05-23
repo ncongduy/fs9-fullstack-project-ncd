@@ -1,10 +1,33 @@
-import React from 'react'
+import { useState } from 'react'
+import classNames from 'classnames/bind'
 
-type AdminPageProps = {}
+import LoginByGoogle from '../../components/GoogleLogin'
+import Topbar from '../../components/Topbar'
+import { UserDocument } from '../../types'
+import styles from './styles.module.scss'
 
-function AdminPage(props: AdminPageProps) {
+const cx = classNames.bind(styles)
+
+function AdminPage() {
+  const [user, setUser] = useState<UserDocument | null>(null)
+
   return (
-    <div>AdminPage</div>
+    <main>
+      {!user && (
+        <section className={cx('wrapper-google')}>
+          <div className={cx('container-icon')}>
+            <h2>Login</h2>
+            <LoginByGoogle onUser={setUser} />
+          </div>
+        </section>
+      )}
+
+      {user && (
+        <section>
+          <Topbar />
+        </section>
+      )}
+    </main>
   )
 }
 

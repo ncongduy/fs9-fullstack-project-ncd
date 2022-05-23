@@ -1,10 +1,15 @@
 @import "normalize.css";
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap");
 
-:root {
-    --primary: hsl(240, 50%, 50%);
-    --secondary: hsl(0, 50%, 50%);
-    --tertiary: hsl(120, 50%, 50%);
+$primary: hsl(240, 50%, 50%);
+$secondary: hsl(0, 50%, 50%);
+$tertiary: hsl(120, 50%, 50%);
+
+@mixin flexSystem($direction, $justify, $align) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
 }
 
 * {

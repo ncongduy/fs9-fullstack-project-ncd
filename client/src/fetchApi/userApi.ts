@@ -2,6 +2,11 @@ import axiosClient from './axiosClient'
 import { UserDocument } from '../types'
 
 const userApi = {
+  googleLogin(token: { id_token: string }) {
+    const url = `/users/google-login`
+    return axiosClient.post(url, token)
+  },
+
   getAllUsers() {
     const url = `/users`
     return axiosClient.get(url)
