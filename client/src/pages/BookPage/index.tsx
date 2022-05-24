@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Paper } from '@mui/material'
 import classNames from 'classnames/bind'
 
 import Topbar from '../../components/Topbar'
 import { GlobalContext } from '../../contexts'
 import bookApi from '../../fetchApi/bookApi'
+import bookLoanApi from '../../fetchApi/bookLoanApi'
 import styles from './styles.module.scss'
 import { Box } from '@mui/system'
 
@@ -14,7 +15,8 @@ const cx = classNames.bind(styles)
 function BookPage() {
   const { bookId } = useParams()
   const [book, setBook] = useState<any>(null)
-  const { setError } = useContext(GlobalContext)
+  const { user, setError, setAnnounce, setStatusAnnounce } = useContext(GlobalContext)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (typeof bookId === 'undefined') return
@@ -24,6 +26,22 @@ function BookPage() {
       .then((book) => setBook(book))
       .catch((err) => setError('Can not load book.'))
   }, [bookId, setError])
+
+  const handleClick = async () => {
+    const data = { bookId, userId: user._id }
+    bookLoanApi
+      .borrowBook(data)
+      .then(() => {
+        navigate('/')
+        setAnnounce(true)
+        setStatusAnnounce('success')
+      })
+      .catch((err) => {
+        navigate('/')
+        setAnnounce(true)
+        setStatusAnnounce('error')
+      })
+  }
 
   return (
     <>
@@ -50,7 +68,7 @@ function BookPage() {
                 <b>Published year:</b> {book.publishedYear}
               </p>
 
-              <Button className={cx('button')} variant="contained">
+              <Button className={cx('button')} variant="contained" onClick={handleClick}>
                 Borrow
               </Button>
             </div>

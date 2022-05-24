@@ -8,6 +8,7 @@ import Book from './components/Book'
 import Error from '../../components/Error'
 
 import styles from './styles.module.scss'
+import Announce from '../../components/Announce'
 
 const cx = classNames.bind(styles)
 const categories = ['Book', 'Book loan']
@@ -36,6 +37,7 @@ function HomePage() {
           <Topbar categories={categories} onClick={setCategory} />
           {category === 'Book' && <Book />}
           {category === 'Book loan' && <h2>Render book loan</h2>}
+          <Announce />
         </section>
       )}
     </main>

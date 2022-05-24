@@ -1,5 +1,4 @@
 import axiosClient from './axiosClient'
-import { BookLoanDocument } from '../types'
 
 const userApi = {
   getAllBookLoans(userId: string) {
@@ -7,7 +6,7 @@ const userApi = {
     return axiosClient.get(url)
   },
 
-  borrowBook(data: BookLoanDocument) {
+  borrowBook(data: any) {
     const url = `/bookloans`
     return axiosClient.post(url, data)
   },
