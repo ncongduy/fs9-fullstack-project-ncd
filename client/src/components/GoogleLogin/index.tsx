@@ -1,13 +1,12 @@
+import { useContext } from 'react'
 import GoogleLogin from 'react-google-login'
 
 import userApi from '../../fetchApi/userApi'
-import { UserDocument } from '../../types'
+import { GlobalContext } from '../../contexts'
 
-type Props = {
-  onUser: React.Dispatch<React.SetStateAction<UserDocument | null>>
-}
+function LoginByGoogle() {
+  const { setUser, setError } = useContext(GlobalContext)
 
-function LoginByGoogle({ onUser }: Props) {
   const responseSuccess = async (response: any) => {
     const tokenId = response?.tokenId
     const res: any = await userApi.googleLogin({
@@ -16,11 +15,14 @@ function LoginByGoogle({ onUser }: Props) {
 
     const { user, token } = res
     localStorage.setItem('access_token', token)
-    onUser(user)
+    setUser(user)
+    setError(null)
   }
 
   const responseFailure = async (response: any) => {
-    onUser(null)
+    localStorage.clear()
+    setUser(null)
+    setError('Can not login.')
   }
   return (
     <GoogleLogin
