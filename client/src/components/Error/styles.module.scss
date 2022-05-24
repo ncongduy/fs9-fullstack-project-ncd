@@ -1,0 +1,24 @@
+@import "../GlobalStyles/styles.scss";
+
+main {
+    background-image: url("https://cdn.pixabay.com/photo/2014/10/14/20/14/library-488690_1280.jpg");
+    min-height: 100vh;
+}
+
+.wrapper {
+    min-height: 100vh;
+    @include flexSystem(row, center, center);
+}
+
+.container {
+    background-color: white;
+    height: 20rem;
+    width: 20rem;
+    border-radius: 0.5rem;
+
+    @include flexSystem(column, center, center);
+
+    h2 {
+        margin-bottom: 1rem;
+    }
+}
