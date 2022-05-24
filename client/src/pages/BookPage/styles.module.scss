@@ -1,0 +1,17 @@
+@import "../../components/GlobalStyles/styles.scss";
+
+.wrapper {
+    min-height: calc(100vh - 64px);
+
+    @include flexSystem(row, center, center);
+}
+
+.container {
+    width: 60%;
+
+    @include flexSystem(row, center, center);
+
+    .button {
+        margin-top: 2rem;
+    }
+}

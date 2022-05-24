@@ -16,8 +16,6 @@ function HomePage() {
   const { user, error } = useContext(GlobalContext)
   const [category, setCategory] = useState('Book')
 
-  console.log(user)
-
   if (error) {
     return <Error error={error} />
   }
