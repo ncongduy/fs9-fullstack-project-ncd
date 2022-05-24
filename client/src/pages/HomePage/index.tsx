@@ -5,10 +5,11 @@ import { GlobalContext } from '../../contexts'
 import LoginByGoogle from '../../components/GoogleLogin'
 import Topbar from '../../components/Topbar'
 import Book from './components/Book'
+import BookLoan from './components/BookLoan'
+import Announce from '../../components/Announce'
 import Error from '../../components/Error'
 
 import styles from './styles.module.scss'
-import Announce from '../../components/Announce'
 
 const cx = classNames.bind(styles)
 const categories = ['Book', 'Book loan']
@@ -36,7 +37,7 @@ function HomePage() {
         <section>
           <Topbar categories={categories} onClick={setCategory} />
           {category === 'Book' && <Book />}
-          {category === 'Book loan' && <h2>Render book loan</h2>}
+          {category === 'Book loan' && <BookLoan />}
           <Announce />
         </section>
       )}
