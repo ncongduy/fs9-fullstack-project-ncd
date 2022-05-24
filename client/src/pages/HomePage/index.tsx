@@ -1,41 +1,47 @@
-import { Container, Grid } from '@mui/material';
-import { useEffect } from 'react';
+import { useContext, useState } from 'react'
+import classNames from 'classnames/bind'
 
-import bookApi from '../../fetchApi/bookApi';
-import './homepage.css';
+import { GlobalContext } from '../../contexts'
+import LoginByGoogle from '../../components/GoogleLogin'
+import Topbar from '../../components/Topbar'
+import Book from './components/Book'
+import Error from '../../components/Error'
 
-type HomePageProps = {};
+import styles from './styles.module.scss'
 
-function HomePage(props: HomePageProps) {
-  useEffect(() => {
-    bookApi.getAllBooks().then((res) => console.log('print book in HomePage component: ', res));
-  }, []);
+const cx = classNames.bind(styles)
+const categories = ['Book', 'Book loan']
+
+function HomePage() {
+  const { user, error } = useContext(GlobalContext)
+  const [category, setCategory] = useState('Book')
+
+  console.log(user)
+
+  if (error) {
+    return <Error error={error} />
+  }
 
   return (
-    <Container className="container">
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <div className="item"></div>
-        </Grid>
+    <main>
+      {!user && (
+        <section className={cx('wrapper')}>
+          <div className={cx('container')}>
+            <h2>Login</h2>
+            <LoginByGoogle />
+          </div>
+        </section>
+      )}
 
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <div className="item"></div>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <div className="item"></div>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <div className="item"></div>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <div className="item"></div>
-        </Grid>
-      </Grid>
-    </Container>
-  );
+      {user && (
+        <section>
+          <Topbar categories={categories} onClick={setCategory} />
+          {category === 'Book' && <Book />}
+          {category === 'Book loan' && <h2>Render book loan</h2>}
+        </section>
+      )}
+    </main>
+  )
 }
 
-export default HomePage;
+export default HomePage

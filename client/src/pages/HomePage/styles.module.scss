@@ -5,12 +5,12 @@ main {
     min-height: 100vh;
 }
 
-.wrapper-google {
+.wrapper {
     min-height: 100vh;
     @include flexSystem(row, center, center);
 }
 
-.container-icon {
+.container {
     background-color: white;
     height: 20rem;
     width: 20rem;
