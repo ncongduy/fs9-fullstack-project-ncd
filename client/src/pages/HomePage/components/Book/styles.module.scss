@@ -1,0 +1,26 @@
+@import "../../../../components/GlobalStyles/styles.scss";
+
+.container {
+    // border: 2px solid $tertiary;
+    min-height: calc(100vh - 64px);
+    background-color: white;
+
+    @include flexSystem(row, center, center);
+}
+
+.item {
+    // border: solid 1px $primary;
+    margin: 1rem;
+
+    @include flexSystem(column, center, center);
+
+    img {
+        width: 12.5rem;
+        cursor: pointer;
+    }
+
+    p {
+        margin-top: 0.25rem;
+        cursor: pointer;
+    }
+}
